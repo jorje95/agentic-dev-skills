@@ -10,7 +10,7 @@ This is the master index of all projects and their **Hierarchical Living Spec Tr
 
 | Project ID (`slug`) | Project Name | Current Stage | Tech Stack | Spec Tree Root | Workspace / Repo | Last Updated |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `citerra` | **Citerra** | `Design Locked` | Firebase (Functions v2, Firestore TTL, Hosting), WXT MV3, React 19, React Native + Expo + Kotlin, Gluestack UI v2 | [specs/projects/citerra](./projects/citerra/00-overview.md) | `/Users/nitroi/.gemini/antigravity/scratch/citerra` (`jorje95/citerra` — Private) | 2026-11-15 |
+| `citerra` | **Citerra** | `Implementation (V1 Slices 1–6 Complete)` | Firebase (Functions v2, Firestore TTL, Hosting), WXT MV3, React 19, React Native + Expo + Kotlin, Gluestack UI v2 | [specs/projects/citerra](./projects/citerra/00-overview.md) | `/Users/nitroi/.gemini/antigravity/scratch/citerra` (`jorje95/citerra` — Private) | 2026-11-15 |
 
 ---
 

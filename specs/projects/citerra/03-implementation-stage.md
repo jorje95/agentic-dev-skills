@@ -51,10 +51,10 @@
   - **Verification:** `pnpm --filter @citerra/web test && pnpm --filter @citerra/web build` (3/3 passing, Vite bundle built)
 
 ### Slice 5: Chrome Extension (`apps/extension` — Manifest V3)
-- [x] **Task 5.1:** Implement MV3 background orchestrator (`contextMenus` selection handler, `/welcome` install tab opener), On-Device AI runner (`window.ai` Gemini Nano -> WebGPU local fallback), and On-Device Local History store
+- [x] **Task 5.1:** Implement MV3 background service worker (`background.ts` with `chrome.contextMenus` selection handler, `chrome.sidePanel`, `/welcome` install tab opener), Chrome Side Panel UI (`SidePanelApp.tsx`), Spark-compatible live evidence client (`browser-evidence-client.ts`), On-Device AI runner (`window.ai` Gemini Nano -> local heuristic NLI fallback), On-Device `IndexedDB` History store (`local-history-db.ts`), and packaged MV3 bundle (`dist/` + `citerra-chrome-extension.zip`)
   - **Model Tier:** `pro`
-  - **Target Files:** `apps/extension/src/**`, `apps/extension/test/**`
-  - **Verification:** `pnpm --filter @citerra/extension test && pnpm --filter @citerra/extension build` (3/3 passing)
+  - **Target Files:** `apps/extension/public/manifest.json`, `apps/extension/sidepanel.html`, `apps/extension/vite.config.ts`, `apps/extension/src/**`, `apps/extension/test/**`
+  - **Verification:** `pnpm --filter @citerra/extension test && pnpm --filter @citerra/extension build` (5/5 passing, `dist/` & `citerra-chrome-extension.zip` packaged)
 
 ### Slice 6: Mobile Companion App (`apps/mobile` — React Native + Kotlin)
 - [x] **Task 6.1:** Implement Mobile Fact-Check Bottom Sheet UI, Android `ACTION_PROCESS_TEXT` native Kotlin activity (`ProcessTextActivity.kt`), and OS Share Sheet intent parser
@@ -74,3 +74,5 @@ Record architectural rulings and spec adjustments made during implementation:
 | 2026-11-15 | Init / `/grill-me` | Selected **Pure Firebase Backend** with 3-tier env isolation (`local`, `staging`, `prod`) and **Two-Tier TTL Cache** gated by `k >= 3` cohort hits | `01-design.md`, `02-testing-playbook.md` |
 | 2026-11-15 | Init / `/grill-me` | Selected **Gluestack UI v2 + NativeWind v4** for unified UX across Web, Chrome Side Panel, and Mobile, plus `/welcome` Buy Me a Coffee / Ko-fi donation flow | `00-overview.md`, `01-design.md` |
 | 2026-11-15 | Slice 1 / Task 1.2 | Replaced `node:crypto` with pure isomorphic FIPS 180-4 `sha256Hex` in `@citerra/core` so browser Vite/WXT and React Native Hermes bundles compile with zero Node polyfills | `03-implementation-stage.md` |
+| 2026-11-15 | Slice 4 / UI & Brand | Adopted **Palette #4 (`Terra & Moss` — Discreet Atmospheric Gradient Edition)** (`#F7F4EE` → `#ECF1ED` → `#F4ECE6`, `#231F1C` espresso ink, `#C25634` terracotta clay, `#3F6A52` botanical sage, `Instrument Serif` + `Plus Jakarta Sans` + `JetBrains Mono`) and claimed clean Firebase Hosting site `https://citerra.web.app` | `03-implementation-stage.md` |
+| 2026-11-15 | Slice 5 / Task 5.1 | Added `LiveBrowserEvidenceClient` with direct Wikipedia REST + Crossref API fallback when `/api/v1/corroborate` is unavailable so the Chrome Extension operates 100% free on the Firebase Spark plan | `03-implementation-stage.md` |

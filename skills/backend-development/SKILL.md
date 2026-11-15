@@ -1,49 +1,63 @@
 ---
 name: backend-development
 description: >-
-  Kotlin and Spring Boot 3/4 backend development standards covering idiomatic Kotlin, layered/modular architecture, REST API conventions, Jakarta @field: validation, RFC 9457 ProblemDetail error handling, Flyway migrations, Spring Data JPA, and JUnit 5 + MockK + Testcontainers testing. Use when building, refactoring, or reviewing backend services and endpoints.
+  Kotlin and Spring Boot 3/4 backend development standards (enriched with SivaLabs & Spring Boot SkillHub best practices) covering idiomatic Kotlin, Value Objects, Command/Query services, Jakarta @field: validation, RFC 9457 ProblemDetail error handling, Flyway migrations, Spring Data JPA, and JUnit 5 + MockK + Testcontainers + ArchUnit testing. Use when building, refactoring, or reviewing backend services and endpoints.
 ---
 
 # Backend Development Skill (Kotlin & Spring Boot)
 
-Follow this workflow when designing, implementing, or modifying Kotlin + Spring Boot backend services and APIs.
+Follow these production-grade Kotlin and Spring Boot practices (synthesized from top SkillHub Spring Boot skills: `sivalabs-agent-skills` and `spring-boot-skills`).
 
-## 1. Idiomatic Kotlin & Spring Architecture
+## 1. Idiomatic Kotlin & Domain Modeling
 
 - **Immutability & Null Safety**:
   - Prefer `val` over `var` and immutable collections.
-  - Leverage Kotlin null-safety (`?`, `?:`, `let`). Never use `!!` in production code; throw explicit domain exceptions instead.
-- **Dependency Injection**: Use primary constructor injection for all `@RestController`, `@Service`, and `@Component` classes. Never use `@Autowired` field injection.
-- **Layer & Module Separation**:
-  - **Controller Layer (`@RestController`)**: Handle HTTP routing, `@Valid` request binding, pagination, and HTTP status codes (`ResponseEntity`). Never put business logic in controllers or expose `@Entity` classes directly.
-  - **Service Layer (`@Service`)**: Encapsulate domain logic and transaction boundaries (`@Transactional(readOnly = true)` by default on query services, `@Transactional` on write methods).
-  - **Repository Layer (`@Repository`)**: Isolate Spring Data JPA / JDBC queries. Use projections or DTO queries to avoid N+1 query issues (`@EntityGraph` or `JOIN FETCH` when needed).
+  - Use Kotlin null-safety (`?`, `?:`, `let`). Never use `!!` in production code; throw explicit domain exceptions instead.
+- **Value Objects (`@JvmInline value class`)**:
+  - Wrap domain identifiers and constrained primitives in Kotlin `@JvmInline value class` (with `@get:JsonValue` and `@JsonCreator` or Spring `Converter<String, T>`) to prevent primitive obsession:
+    ```kotlin
+    @JvmInline
+    value class UserId(@get:JsonValue val value: String) {
+        init { require(value.isNotBlank()) { "UserId cannot be blank" } }
+    }
+    ```
+- **Constructor Injection**: Use primary constructor injection for all `@RestController`, `@Service`, and `@Component` beans.
 
-## 2. API Contracts, Validation & Error Handling
+## 2. Layered & Modular Architecture (`Spring Modulith` Ready)
+
+- **Controller Layer (`@RestController`)**:
+  - Handle HTTP routing, `@Valid` request binding, pagination, and HTTP status codes (`ResponseEntity`).
+  - Never put business logic in controllers or expose JPA `@Entity` classes directly in API responses.
+- **Service Layer (`@Service`) — Unit of Work & CQS**:
+  - Default to `@Transactional(readOnly = true)` at the class level or on query methods; annotate mutating methods explicitly with `@Transactional`.
+  - Use dedicated **Command (`*Cmd`)**, **Query (`*Query`)**, and **Result (`*Result` / `*VM`)** Kotlin `data class` models for service inputs and outputs.
+  - Decouple cross-module side effects by publishing typed **Domain Events** via Spring's `ApplicationEventPublisher` (`@TransactionalEventListener`).
+- **Repository Layer (`@Repository`)**:
+  - Isolate Spring Data JPA / JDBC / jOOQ queries.
+  - Prevent N+1 queries using DTO projections, `@EntityGraph`, or `JOIN FETCH`.
+  - Manage all schema evolution through **Flyway** (`db/migration/V*__*.sql`) with `spring.jpa.hibernate.ddl-auto=validate`.
+
+## 3. API Contracts, Validation & RFC 9457 Error Handling
 
 - **Kotlin DTO Validation (`@field:`)**:
-  - Always prefix Jakarta Bean Validation annotations on Kotlin `data class` constructor properties with `@field:` so annotations apply to the backing field:
+  - Always apply `@field:` use-site targets to Jakarta Bean Validation annotations on Kotlin `data class` properties:
     ```kotlin
-    data class CreateUserRequest(
-        @field:NotBlank val email: String,
-        @field:Size(min = 2, max = 100) val displayName: String
+    data class CreateOrderRequest(
+        @field:NotBlank val customerId: String,
+        @field:NotEmpty val items: List<@Valid OrderItemDto>
     )
     ```
-- **RFC 9457 / 7807 `ProblemDetail` Error Responses**:
-  - Centralize exception handling in `@RestControllerAdvice` returning `ProblemDetail` with standard `type`, `title`, `status`, `detail`, and field-level validation errors. Never leak internal stack traces or SQL errors.
-- **Database Migrations**:
-  - Manage all schema changes via versioned **Flyway** (`db/migration/V*__*.sql`) or Liquibase migrations; set `spring.jpa.hibernate.ddl-auto=validate` in production configs.
+- **Global Exception Handling (`ProblemDetail` / RFC 9457)**:
+  - Centralize error handling in `@RestControllerAdvice` extending `ResponseEntityExceptionHandler` and returning `ProblemDetail` (`type`, `title`, `status`, `detail`, and `errors` map) without leaking internal stack traces.
 
-## 3. Complementary Testing Strategy
+## 4. Complementary Testing Pyramid
 
-Write tests at the fastest level that provides confidence:
-1. **Unit Tests (No Spring Context)**: Test domain and service logic using **JUnit 5** and **MockK** (`mockk()`, `every { ... } returns ...`, `verify { ... }`).
-2. **Web Slice Tests (`@WebMvcTest`)**: Test controller routing, serialization, `@Valid` constraints, and security guards with `MockMvc` / `MockMvcTester` and `@MockkBean`.
-3. **Persistence Slice & Integration Tests (`@DataJpaTest` / `@SpringBootTest`)**:
-   - Always use **Testcontainers** (`@ServiceConnection`) with the real target database engine (e.g., PostgreSQL)—never substitute in-memory H2.
+| Test Level | Tooling | When to Use |
+| :--- | :--- | :--- |
+| **Unit Tests** | **JUnit 5 + MockK** (`mockk()`, `every`, `verify`) | Pure domain logic, value objects, and service rules (no Spring context) |
+| **Web Slice** | `@WebMvcTest` + `MockMvcTester` + `@MockkBean` | Controller routing, JSON serialization, `@Valid` errors, auth guards |
+| **Persistence Slice** | `@DataJpaTest` + **Testcontainers** (`@ServiceConnection`) | Custom JPA/SQL queries and mappings against a real DB container (never H2) |
+| **Architecture** | **ArchUnit** | Enforcing package boundaries, layer dependencies, and module isolation |
+| **End-to-End Smoke** | `@SpringBootTest(webEnvironment = RANDOM_PORT)` + `RestTestClient` | Critical happy-path integration across the full stack |
 
-## 4. Verification Checklist
-
-1. Run build and static analysis (`./gradlew check` / `ktlint` / `detekt`).
-2. Verify all unit and slice tests pass (`./gradlew test`).
-3. Confirm API request/response schemas match frontend (React/Angular) and mobile (React Native) TypeScript models.
+- Prefer `@Sql("/test-data.sql")` or service-level setup over coupling tests to internal repository state.

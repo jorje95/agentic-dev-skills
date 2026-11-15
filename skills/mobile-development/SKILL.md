@@ -1,46 +1,45 @@
 ---
 name: mobile-development
 description: >-
-  React Native (TypeScript) and Kotlin mobile development workflow and performance standards (based on Callstack & Expo best practices) covering UI/Hook/Service separation, React Navigation, safe areas, FPS/TTI/bundle optimization, FlashList, Reanimated, offline resilience, and Kotlin TurboModules/Expo Modules. Use when building, updating, profiling, or debugging mobile app features.
+  React Native (TypeScript), Expo, and Kotlin mobile development workflow and performance standards (synthesized from Callstack, Vercel React Native Skills, and Official Expo SkillHub packages) covering Measure-Optimize-Remeasure, FlashList, Reanimated GPU animations, React Navigation / Expo Router, Safe Areas, and Kotlin TurboModules/Expo Modules. Use when building, updating, profiling, or debugging mobile app features.
 ---
 
-# Mobile Development Skill (React Native & Kotlin)
+# Mobile Development Skill (React Native, Expo & Kotlin)
 
-Follow these architecture and performance standards when building, optimizing, or debugging React Native mobile apps and Kotlin native bridges.
+Follow these prioritized React Native and Kotlin mobile standards (synthesized from `callstackincubator/agent-skills`, `vercel-react-native-skills`, and `expo/skills`).
 
-## 1. Layered Mobile Architecture
+## 1. Optimization Workflow (`Measure → Optimize → Re-measure → Validate`)
 
-- **Screen & UI Layer**:
-  - Build small, typed functional components using `StyleSheet.create` (or Unistyles/NativeWind if configured).
-  - Always define explicit layout constraints (`flex: 1` on root containers) to prevent flexbox layout collapse.
-  - Handle device insets using `react-native-safe-area-context` (`useSafeAreaInsets` / `SafeAreaView`) and keyboard avoidance (`react-native-keyboard-controller` or `KeyboardAvoidingView`).
-- **Navigation (`React Navigation` / `Expo Router`)**:
-  - Enforce end-to-end TypeScript route param typing.
-  - Prefer native stack (`@react-navigation/native-stack`) and native/bottom tabs for platform-authentic transitions and gestures.
-- **State, Caching & Offline Resilience**:
-  - Use **TanStack Query** with persistent storage (**MMKV** / AsyncStorage) for offline-first server cache and background refetching.
-  - Store sensitive tokens exclusively in encrypted storage (`expo-secure-store` / `react-native-keychain`).
+- Never apply speculative memoization or architectural changes for performance without measuring first (React DevTools Profiler, Hermes sampling profiler, or frame timelines).
+- Validate every optimization against concrete metrics: **FPS (60/120fps)**, **TTI (startup time)**, **re-render count**, and **bundle size**.
 
-## 2. Performance Optimization (`Measure → Optimize → Re-measure`)
+## 2. Priority 1: List & Scroll Performance (`CRITICAL`)
 
-- **FPS & Lists (CRITICAL)**:
-  - Never render long or dynamic lists inside a `ScrollView`; always use **`FlashList`** or **`FlatList`** with stable `keyExtractor` and memoized item components.
-  - Avoid inline object/arrow function allocations on hot list items when profiling shows cascading re-renders.
-  - Use atomic state selectors (e.g., `useStore(s => s.slice)`) so components only re-render when their specific slice changes.
-- **Animations & Gestures**:
-  - Run all animations and gesture interactions on the UI worklet thread using **`react-native-reanimated`** and **`react-native-gesture-handler`**; never drive frame-by-frame layout changes across the JS bridge.
-- **TTI & Bundle Size**:
-  - Use Hermes bytecode compilation, avoid barrel-file imports (`import ... from './index'`) that defeat tree-shaking, and defer heavy non-critical initialization until after initial screen mount.
+- **Virtualize All Dynamic Lists (`list-performance-virtualize`)**: Never map arrays inside a `ScrollView` for dynamic/long lists. Use **`FlashList`** (note: FlashList v2 no longer requires `estimatedItemSize`) or **`FlatList`**.
+- **Memoize List Items & Stabilize Callbacks (`list-performance-item-memo`)**:
+  - Wrap list item components in `React.memo` and keep props primitive/stable.
+  - Avoid inline style objects (`style={{ ... }}`) and inline arrow callbacks inside `renderItem`.
+  - Pass `getItemType` to `FlashList` for heterogeneous feeds so native view recycling stays fast.
+- **Images in Lists (`ui-expo-image`)**: Use `expo-image` (or FastImage) with caching, `recyclingKey`, and explicit dimensions instead of stock `<Image>`.
 
-## 3. Native Android / Kotlin Modules
+## 3. Priority 2: GPU Animations & Gestures (`HIGH`)
 
-- When platform-specific capabilities require native Kotlin code (TurboModules / Expo Modules):
-  - Keep the native bridge surface thin and strongly typed in TypeScript.
-  - Execute all blocking I/O, crypto, or heavy computation on Kotlin background coroutine dispatchers (`Dispatchers.IO` / `Dispatchers.Default`), never on the Android main UI thread.
-  - Respect Android Activity/Fragment lifecycle cleanup to prevent memory leaks.
+- **Animate Only GPU Properties (`animation-gpu-properties`)**: Run animations on the UI thread with **`react-native-reanimated`** animating `transform` and `opacity`—avoid animating `width`, `height`, `top`, or `padding` on the JS thread.
+- **Derived Animation Values (`animation-derived-value`)**: Use `useDerivedValue` for computed worklet animations and `Gesture.Tap` / `react-native-gesture-handler` for coordinated touch interactions.
 
-## 4. Verification Checklist
+## 4. Priority 3: Navigation, Safe Areas & Rendering Safety (`HIGH`)
 
-1. Run TypeScript (`tsc --noEmit`) and ESLint checks.
-2. Run Jest + **React Native Testing Library** tests for screens and hooks.
-3. Verify both **iOS** and **Android** behavior: safe areas, hardware back button, keyboard overlap, permissions, offline state, and minimum touch target sizes (`44x44pt` / `48x48dp`).
+- **Native Navigators (`navigation-native-navigators`)**: Prefer native stack (`@react-navigation/native-stack` / Static API or `expo-router`) and native bottom tabs over JS-driven navigators.
+- **Safe Areas & Scroll Insets (`ui-safe-area-scroll`)**:
+  - Use `react-native-safe-area-context` (`useSafeAreaInsets`) or `contentInsetAdjustmentBehavior="automatic"` on `ScrollView` / `FlashList`.
+  - Always set explicit `flex: 1` on screen root containers to prevent layout collapse.
+- **React Native Rendering Guardrails**:
+  - **Text inside `<Text>` (`rendering-text-in-text-component`)**: Never render raw strings outside a `<Text>` component (causes native crash).
+  - **Avoid Falsy `&&` (`rendering-no-falsy-and`)**: Never write `{count && <Badge />}` or `{str && <View />}`—if `count` is `0` or `str` is `""`, React Native crashes attempting to render raw text in a `<View>`. Always coerce to boolean (`{count > 0 && <Badge />}` or ternary `{count ? <Badge /> : null}`).
+  - **Use `Pressable` (`ui-pressable`)**: Prefer `Pressable` over legacy `TouchableOpacity`.
+
+## 5. Native Android / Kotlin Modules (`TurboModules` / `Expo Modules`)
+
+- Keep native bridges thin and strongly typed in TypeScript.
+- Offload all blocking I/O, database, file, and crypto work to Kotlin coroutine dispatchers (`Dispatchers.IO` / `Dispatchers.Default`); never block the Android UI thread.
+- Clean up native listeners, broadcast receivers, and coroutines on lifecycle destroy/unmount.

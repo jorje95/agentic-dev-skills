@@ -1,34 +1,54 @@
 ---
 name: angular-development
 description: >-
-  Modern Angular development guidelines and workflows using standalone components, Signals, OnPush change detection, inject() DI, typed Reactive Forms, RxJS interop, and modern control flow (@if, @for, @defer). Use when creating, updating, or reviewing Angular components, services, or state management.
+  Official modern Angular (v19–v22+) development guidelines and workflows covering standalone components, Signals (signal, computed, linkedSignal, input, output, model), Signal Forms / typed Reactive Forms, host bindings, NgOptimizedImage, and built-in control flow (@if, @for, @defer). Use when creating, updating, or reviewing Angular components, services, or state management.
 ---
 
 # Angular Development Skill
 
-Follow these modern Angular standards when authoring, refactoring, or reviewing Angular web applications.
+Follow these official modern Angular standards (synthesized from the official `angular/angular` AI guidelines and SkillHub best practices).
 
-## 1. Component & Reactivity Standards
+## 1. Component & Decorator Standards
 
-- **Standalone by Default**: All components, directives, and pipes must be standalone. Do not introduce new `NgModule` declarations.
-- **Change Detection**: Always configure `changeDetection: ChangeDetectionStrategy.OnPush` on every component.
-- **Signals-First State Management**:
-  - Use `signal()` for writable state and `computed()` for derived state.
-  - Use signal-based `input()`, `input.required()`, `output()`, and `model()` instead of `@Input()` and `@Output()` decorators.
-  - Avoid using `effect()` to copy or synchronize state; prefer `computed()` or `linkedSignal()`.
-- **Dependency Injection**: Use `inject()` at field initialization rather than constructor parameter injection.
-- **RxJS & Signals Interop**:
-  - Use RxJS for async streams, `HttpClient` pipelines, and complex event coordination (`switchMap`, `debounceTime`, `retry`).
-  - Bridge observables to templates with `toSignal()` (from `@angular/core/rxjs-interop`) and auto-clean subscriptions with `takeUntilDestroyed()`.
+- **Standalone by Default**:
+  - Always build standalone components, directives, and pipes; never introduce new `NgModule` declarations.
+  - In Angular v19+/v22+, standalone is the default—do **not** add redundant `standalone: true` metadata unless the project is on an older Angular version.
+- **Change Detection**:
+  - Use `OnPush` / zoneless-compatible reactivity (in Angular v22+, `OnPush` is default; in v17–v21, explicitly set `changeDetection: ChangeDetectionStrategy.OnPush`).
+- **Host Bindings**:
+  - Do **NOT** use `@HostBinding` or `@HostListener` decorators. Put all host bindings and listeners inside the `host: { ... }` property of `@Component` or `@Directive`.
+- **Single Responsibility & Separation**:
+  - Keep components small and focused. Place component logic in `.ts`, styles in `.css`/`.scss`, and templates in `.html` (or inline for very small components).
 
-## 2. Templates, Routing & Forms
+## 2. Signals-First Reactivity & State Management
 
-- **Built-in Control Flow**: Always use `@if`, `@for (item of items(); track item.id)`, and `@switch` instead of `*ngIf`, `*ngFor`, and `*ngSwitch`.
-- **Deferrable Views**: Use `@defer (on viewport)` or `@defer (on idle)` with `@placeholder` and `@loading` blocks to lazy-load heavy below-the-fold components.
-- **Typed Reactive Forms**: Use strictly typed `FormBuilder` / `NonNullableFormBuilder` for complex forms with explicit validation state feedback.
-- **Lazy Route Loading**: Use `loadComponent` and `loadChildren` in route definitions for code splitting.
+- **Component Inputs, Outputs & Two-Way Binding**:
+  - Use `input()` and `input.required()` instead of `@Input()`.
+  - Use `output()` instead of `@Output()`.
+  - Use `model()` for two-way bound properties (`[(prop)]`) instead of pairing `input()` + `output()`.
+- **Local & Derived State**:
+  - Use `signal()` for writable state; update exclusively via `.set()` or `.update()` (never `.mutate()`).
+  - Use `computed()` for pure derived state.
+  - Use `linkedSignal()` for writable state that resets or derives from upstream reactive sources.
+  - Avoid using `effect()` to synchronize state; reserve `effect()` strictly for DOM/logging/external API side effects.
+- **RxJS Interop**:
+  - Bridge Observables to Signals with `toSignal()` (`@angular/core/rxjs-interop`) and clean up imperative subscriptions with `takeUntilDestroyed()`.
 
-## 3. Verification Checklist
+## 3. Templates, Styling & Forms
 
-1. Run `ng build` / `tsc --noEmit` to verify strict template and TypeScript compilation.
-2. Run unit/component tests (`ng test`) verifying DOM output, signal transitions, and accessibility attributes.
+- **Native Control Flow & Deferrable Views**:
+  - Always use `@if`, `@for (item of items(); track item.id)`, and `@switch` instead of `*ngIf`, `*ngFor`, and `*ngSwitch`.
+  - Use `@defer (on viewport)` / `@defer (on idle)` with `@placeholder` and `@loading` blocks for heavy components.
+- **Bindings & Imports**:
+  - Do **NOT** use `ngClass` or `ngStyle`; use native `[class.active]="..."` / `[class]="..."` and `[style]="..."` bindings.
+  - Do **NOT** import `CommonModule`; import only the specific pipes/directives used (`DatePipe`, `CurrencyPipe`, `AsyncPipe`).
+  - Use `NgOptimizedImage` (`ngSrc`) for all static images (except inline base64 images).
+- **Forms**:
+  - Prefer **Signal Forms** (`@angular/forms/signals`) in Angular v22+, or strictly typed **Reactive Forms** (`NonNullableFormBuilder`) over template-driven forms.
+- **Dependency Injection**:
+  - Always use the `inject()` function instead of constructor injection.
+
+## 4. Accessibility & Verification
+
+1. Must pass all **AXE** checks and meet **WCAG AA** minimums (focus management, color contrast, semantic ARIA).
+2. Run `ng build` / `tsc --noEmit` and component tests (`ng test`) before completing any task.

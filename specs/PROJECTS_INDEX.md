@@ -10,7 +10,7 @@ This is the master index of all projects and their **Hierarchical Living Spec Tr
 
 | Project ID (`slug`) | Project Name | Current Stage | Tech Stack | Spec Tree Root | Workspace / Repo | Last Updated |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| *(none yet — run `./scripts/init-project-spec.sh <slug> "<Name>" "<Stack>"` to scaffold your first project)* | — | — | — | — | — | — |
+| `citerra` | **Citerra** | `Design Locked` | Firebase (Functions v2, Firestore TTL, Hosting), WXT MV3, React 19, React Native + Expo + Kotlin, Gluestack UI v2 | [specs/projects/citerra](./projects/citerra/00-overview.md) | `/Users/nitroi/.gemini/antigravity/scratch/citerra` (`jorje95/citerra` — Private) | 2026-11-15 |
 
 ---
 
@@ -19,6 +19,6 @@ This is the master index of all projects and their **Hierarchical Living Spec Tr
 | Stage | Spec Node | Exit / Gate Criteria |
 | :--- | :--- | :--- |
 | **1. Overview** | `00-overview.md` | Objectives, measurable success criteria, explicit assumptions, Capability Map (module tree), and Always/Ask/Never boundaries approved. |
-| **2. Design** | `01-design.md` | System architecture, database schema/migrations, cross-layer API contracts (Kotlin DTOs ↔ TypeScript interfaces), and ADRs locked. |
-| **3. Testing Playbook** | `02-testing-playbook.md` | Unit (JUnit/MockK, Vitest/RTL), Slice (`@WebMvcTest`, Testcontainers), edge-case matrix, and mobile UX verification playbooks defined. |
+| **2. Design** | `01-design.md` | System architecture, database schema/migrations, cross-layer API contracts (Kotlin/TS DTOs ↔ TypeScript interfaces), and ADRs locked. |
+| **3. Testing Playbook** | `02-testing-playbook.md` | Unit (JUnit/MockK, Vitest/RTL), Slice (`@WebMvcTest`, Testcontainers, Firebase Emulator), edge-case matrix, and mobile UX verification playbooks defined. |
 | **4. Implementation** | `03-implementation-stage.md` | Disjoint vertical slices assigned to model tiers (`flash_lite` / `flash` / `pro`), tasks checked off with passing verification commands, and rulings logged. |

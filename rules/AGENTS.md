@@ -8,9 +8,10 @@ Whenever a user prompt starts with the `JA:` prefix (case-insensitive, e.g., `JA
 - **No Document or Artifact Updates**: Do **NOT** create or update markdown documents, plans, task lists, or artifacts.
 - **No Mutating Commands**: Only use read-only inspection tools (`read_file`, search/grep, or non-mutating inspection commands) if needed to answer the question accurately.
 
-## 2. Automatic GitHub Synchronization for Skills, Rules & Living Specs
+## 2. Automatic GitHub Synchronization & Private Repository Policy
 
-All global agentic development rules, skills, and the **Living Spec Portfolio** live in `/Users/nitroi/.gemini/config/plugins/agentic-dev` and are tracked in the GitHub repository [`jorje95/agentic-dev-skills`](https://github.com/jorje95/agentic-dev-skills).
+All global agentic development rules, skills, and the **Living Spec Portfolio** live in `/Users/nitroi/.gemini/config/plugins/agentic-dev` and are tracked in the **private** GitHub repository [`jorje95/agentic-dev-skills`](https://github.com/jorje95/agentic-dev-skills).
+- **Mandatory Private Repo Rule**: All GitHub repositories created or managed for projects (including `jorje95/agentic-dev-skills` and any project repository such as `jorje95/citerra`) **MUST** be strictly **private** (`--private`). Never create a public repository or make a private repository public unless explicitly instructed.
 - **Mandatory Auto-Push Rule**: Every time you create, modify, or delete any skill (`skills/**/SKILL.md`), rule (`rules/*.md`), living spec (`specs/**`), script, or manifest (`plugin.json`) in `/Users/nitroi/.gemini/config/plugins/agentic-dev`, you **MUST** immediately commit and push the changes to `origin/main` on GitHub before finishing your turn (via `/Users/nitroi/.gemini/config/plugins/agentic-dev/scripts/sync-to-github.sh "<commit message>"`).
 
 ## 3. Living Spec Trees & Project Portfolio Management

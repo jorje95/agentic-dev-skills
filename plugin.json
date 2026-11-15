@@ -1,0 +1,11 @@
+{
+  "name": "agentic-dev",
+  "displayName": "Agentic Development Standards",
+  "description": "Global rules and skills for agentic workflows across Kotlin/Spring Boot backend, Angular & React web frontend, and React Native mobile development, including the JA: (Just Asking) read-only protocol.",
+  "version": "1.1.0",
+  "suggestedPrompts": [
+    "JA: Explain how our Kotlin Spring Boot API and React Native client interact",
+    "Scaffold a Kotlin Spring Boot endpoint with validation and MockK tests",
+    "Create a typed React / React Native feature module with hooks and state management"
+  ]
+}

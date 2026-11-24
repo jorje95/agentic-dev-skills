@@ -1,7 +1,7 @@
 # Citerra — Stage 1: Overview & Capability Map
 
 - **Project Slug:** `citerra`
-- **Status / Stage:** `Implementation (Slices 1–7 Complete · Factuality v2 v0.4.0)`
+- **Status / Stage:** `Implementation (Slices 1–8 Complete · Factuality v3 v0.5.0 · /benchmarks Live)`
 - **Tech Stack:** Firebase (Cloud Functions v2 TS, Firestore, Hosting, Remote Config, Crashlytics), Vite + React 19 (Chrome MV3 Extension), React 19 + Vite (Landing Page & `/benchmarks`), React Native + Expo + Kotlin Native Modules (Mobile), Evidence Desk Shared UI (`@citerra/ui`)
 - **Workspace / Repo:** `/Users/nitroi/.gemini/antigravity/scratch/citerra` (`github.com/jorje95/citerra` — Private)
 - **Google Drive Living Design Doc:** [`Citerra — Architecture, Factuality & Economics Design Doc`](https://docs.google.com/document/d/1LgM6ScrmqPcp2KjpKu5jNQ1enIE2zAk1WgYiO3JNsiA/edit) (Doc ID: `1LgM6ScrmqPcp2KjpKu5jNQ1enIE2zAk1WgYiO3JNsiA`, Folder: `Citerra app` / `1Wjy8DeSVSfQXRCMjjp48FvXwOGVR9hyi`, Local Source: `docs/DESIGN_DOC.md`)

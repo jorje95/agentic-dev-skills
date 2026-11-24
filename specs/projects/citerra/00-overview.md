@@ -1,10 +1,11 @@
 # Citerra — Stage 1: Overview & Capability Map
 
 - **Project Slug:** `citerra`
-- **Status / Stage:** `Design`
-- **Tech Stack:** Firebase (Cloud Functions v2 TS, Firestore, Hosting, Remote Config, Crashlytics), WXT + React 19 (Chrome MV3 Extension), React 19 + Vite (Landing Page & Web Sandbox), React Native + Expo + Kotlin Native Modules (Mobile), Gluestack UI v2 + NativeWind v4 (Shared Cross-Platform UX)
+- **Status / Stage:** `Implementation (Slices 1–7 Complete · Factuality v2 v0.4.0)`
+- **Tech Stack:** Firebase (Cloud Functions v2 TS, Firestore, Hosting, Remote Config, Crashlytics), Vite + React 19 (Chrome MV3 Extension), React 19 + Vite (Landing Page & `/benchmarks`), React Native + Expo + Kotlin Native Modules (Mobile), Evidence Desk Shared UI (`@citerra/ui`)
 - **Workspace / Repo:** `/Users/nitroi/.gemini/antigravity/scratch/citerra` (`github.com/jorje95/citerra` — Private)
-- **Last Updated:** 2026-11-15
+- **Google Drive Living Design Doc:** [`Citerra — Architecture, Factuality & Economics Design Doc`](https://docs.google.com/document/d/1LgM6ScrmqPcp2KjpKu5jNQ1enIE2zAk1WgYiO3JNsiA/edit) (Doc ID: `1LgM6ScrmqPcp2KjpKu5jNQ1enIE2zAk1WgYiO3JNsiA`, Folder: `Citerra app` / `1Wjy8DeSVSfQXRCMjjp48FvXwOGVR9hyi`, Local Source: `docs/DESIGN_DOC.md`)
+- **Last Updated:** 2026-11-24
 
 ---
 
@@ -44,6 +45,7 @@
 
 - **Always:**
   - Keep all GitHub repositories **private**.
+  - Update both `docs/DESIGN_DOC.md` and the live Google Drive Living Design Doc (`1LgM6ScrmqPcp2KjpKu5jNQ1enIE2zAk1WgYiO3JNsiA` in `Citerra app`) whenever data flow, services, models, billing, cost estimates, or benchmark accuracy results change (preserving embedded diagrams).
   - Delegate any `firestore.rules` creation or modification to the `firestore-rules-author` subagent.
   - Validate every incoming payload in Firebase Cloud Functions with strict `Zod` schemas and reject unexpected fields.
   - Run unit/emulator tests before checking off tasks in `03-implementation-stage.md`.

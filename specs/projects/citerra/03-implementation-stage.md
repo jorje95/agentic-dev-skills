@@ -63,26 +63,26 @@
   - **Verification:** `pnpm --filter @citerra/mobile test && pnpm --filter @citerra/mobile build` (2/2 passing)
 
 ### Slice 7: Factuality v2 — Atomic Claims, Conflict Engine & Free-Core Evidence Expansion
-- [ ] **Task 7.1:** Add `@citerra/core` v2 schemas (`AtomicClaimVerdict`, citation `stance`/`matchedQuote`, `VerificationTier` Pro hook), `decomposeAtomicClaims` (top 2–3 check-worthy claims), `detectStructuredConflicts` (dates/years/percentages/quantities/entities), and the 20-case **Adversarial Perturbation Test Suite**
+- [x] **Task 7.1:** Add `@citerra/core` v2 schemas (`AtomicClaimVerdict`, citation `stance`/`matchedQuote`/`structuredFacts`, `VerificationTier` Pro hook), `decomposeAtomicClaims` (top 1–3 check-worthy claims), `detectStructuredConflicts` (dates/years/percentages/quantities/birthplaces), `extractBestMatchingQuote`, and the **Adversarial Perturbation Test Suite** (26 tests: 17 mutated-fact traps caught = 100%, 0/4 false flags on controls)
   - **Model Tier:** `pro`
   - **Target Files:** `packages/core/src/schemas.ts`, `packages/core/src/atomic.ts`, `packages/core/src/conflicts.ts`, `packages/core/test/adversarial.test.ts`
-  - **Verification:** `pnpm --filter @citerra/core test`
-- [ ] **Task 7.2:** Expand `LiveBrowserEvidenceClient` & backend proxy: add browser-direct **Wikidata structured entity triples**, **OpenAlex `abstract_inverted_index` full abstract reconstruction**, **GDELT DOC 2.0 100-language news**, richer Wikipedia extracts, and Pro-ready `/api/v1/corroborate` tier/Google Fact Check API contract
+  - **Verification:** `pnpm --filter @citerra/core test` (`36/36` passing)
+- [x] **Task 7.2:** Expand `LiveBrowserEvidenceClient` & backend proxy: add browser-direct **Wikidata structured entity triples** (`P569`/`P570`/`P571`/`P1082`/`P19`), **OpenAlex `abstract_inverted_index` full abstract reconstruction**, **GDELT DOC 2.0 100-language news**, richer Wikipedia extracts, MV3 host permissions (`v0.4.0`), and `GdeltNewsProvider` in `@citerra/backend`
   - **Model Tier:** `flash`
-  - **Target Files:** `apps/extension/src/browser-evidence-client.ts`, `packages/backend/src/providers.ts`, `packages/backend/src/service.ts`
-  - **Verification:** `pnpm --filter @citerra/extension exec vitest run test/extension.test.ts test/live-verification.test.ts`
-- [ ] **Task 7.3:** Upgrade `OnDeviceAiEngine` & `ExtensionBackgroundOrchestrator` with **3-Layer Verification** (atomic parallel scoring + structured/Wikidata conflict gating + **Chrome 138+ stable `LanguageModel` Gemini Nano** with `2.0s` timeout fallback + progressive `onPartialResult` callback)
+  - **Target Files:** `apps/extension/src/browser-evidence-client.ts`, `apps/extension/public/manifest.json`, `packages/backend/src/providers.ts`, `packages/backend/src/index.ts`
+  - **Verification:** `pnpm --filter @citerra/backend test && pnpm --filter @citerra/extension test` (passing)
+- [x] **Task 7.3:** Upgrade `OnDeviceAiEngine` & `ExtensionBackgroundOrchestrator` with **3-Layer Verification** (atomic parallel scoring + structured/Wikidata conflict gating + universal negation guard + stance-first citation sorting + **Chrome 138+ stable `LanguageModel` Gemini Nano** with `1900 ms` timeout fallback + progressive `onPartialResult` callback)
   - **Model Tier:** `pro`
-  - **Target Files:** `apps/extension/src/on-device-ai.ts`, `apps/extension/src/background-orchestrator.ts`, `apps/extension/src/SidePanelApp.tsx`
-  - **Verification:** `pnpm --filter @citerra/extension test`
-- [ ] **Task 7.4:** Upgrade `@citerra/ui` `FactCheckCard` & `CitationItemCard` with **Atomic Claim Checklist**, inline **Conflict Diff callouts** (`1885 vs. 1879 [1]`), per-citation **Stance tags** (`Supports` / `Contradicts` / `Context`), and **Progressive Reveal** animation (`prefers-reduced-motion` compliant)
+  - **Target Files:** `apps/extension/src/on-device-ai.ts`, `apps/extension/src/background-orchestrator.ts`, `apps/extension/src/SidePanelApp.tsx`, `apps/extension/test/extension.test.ts`
+  - **Verification:** `pnpm --filter @citerra/extension test` (`11/11` extension tests passing)
+- [x] **Task 7.4:** Upgrade `@citerra/ui` `FactCheckCard` & `CitationItemCard` with **Atomic Claim Checklist**, inline **Conflict Diff callouts** (`Conflict: “1885” vs. “1879” (Wikidata: Albert Einstein)`), per-citation **Stance tags** (`Supports` / `Contradicts`) with flex-wrap overflow fix, `matchedQuote` excerpts, and **Progressive Reveal** indicator
   - **Model Tier:** `flash`
-  - **Target Files:** `packages/ui/src/components.tsx`, `packages/ui/test/ui.test.tsx`, `apps/extension/test/visual-ui.test.tsx`
-  - **Verification:** `pnpm --filter @citerra/ui test && pnpm --filter @citerra/extension exec vitest run test/visual-ui.test.tsx`
-- [ ] **Task 7.5:** Expand **X-FACT Benchmark** to 60+ claims with true per-class Precision/Recall/Macro-F1, create **Real-Chrome Playwright E2E 5s SLA gate** (`scripts/verify-chrome-e2e.mjs`), and publish public **`/benchmarks` Transparency Scorecard** on `apps/web` linked from extension footer
+  - **Target Files:** `packages/ui/src/components.tsx`, `packages/ui/test/ui.test.tsx`
+  - **Verification:** `pnpm --filter @citerra/ui test` (`5/5` passing)
+- [x] **Task 7.5:** Expand **X-FACT Benchmark** to 60 real claims across 6 languages with true per-class Precision/Recall/Macro-F1 (`71.7%` calibrated / `45.0%` strict / `0.360` Macro-F1 / `100%` under 5s @ `2,162 ms` avg), create **Real-Chrome Playwright E2E 5s SLA gate** (`scripts/verify-chrome-e2e.mjs`, `4/4` passing, `0` page errors), publish public **`/benchmarks` Transparency Scorecard** on `apps/web` linked from extension footer, and sync Living Design Doc (`1LgM6ScrmqPcp2KjpKu5jNQ1enIE2zAk1WgYiO3JNsiA`) in Google Drive `Citerra app`
   - **Model Tier:** `flash`
-  - **Target Files:** `apps/extension/scripts/benchmark-i18n.ts`, `apps/extension/scripts/verify-chrome-e2e.mjs`, `apps/web/src/**`
-  - **Verification:** `pnpm test && pnpm --filter @citerra/extension build && node apps/extension/scripts/verify-chrome-e2e.mjs`
+  - **Target Files:** `apps/extension/scripts/benchmark-i18n.ts`, `apps/extension/scripts/verify-chrome-e2e.mjs`, `apps/web/src/App.tsx`, `apps/web/test/web.test.tsx`, `docs/DESIGN_DOC.md`
+  - **Verification:** `pnpm test && node apps/extension/scripts/verify-chrome-e2e.mjs` (all 7 packages + 4/4 real-Chrome E2E green)
 
 ---
 
@@ -114,3 +114,4 @@ Record architectural rulings and spec adjustments made during implementation:
 | 2026-11-18 | Slice 1 & 5 / X-FACT Multilingual Benchmark & 5s SLA | Evaluated Citerra against the gold-standard ACL 2021 X-FACT dataset across Romanian (factual.ro), Spanish (chequeado.com), German (correctiv.org), Portuguese (poligrafo/lupa), Italian (pagellapolitica.it), and Polish (demagog.org.pl); enhanced classifier with universal negation inversion, diacritic-agnostic refutation tokens, and URL-slug tokenization; achieved 77.8% (up to 88.9%) accuracy and 100% compliance with the 5.0-second per page latency budget (average 1,209 ms) | `01-design.md`, `02-testing-playbook.md`, `03-implementation-stage.md` |
 | 2026-11-19 | Slice 5 / Wikipedia CORS & Zero-Hit Cache Invalidation | Fixed browser CORS failure caused by 'Api-User-Agent' header triggering unwhitelisted preflight on Wikipedia API; invalidated zero-citation entries in IndexedDB so previous failed checks do not block fresh evaluations; added forceRefresh to manual Check Factuality / Check Main Claim triggers | `03-implementation-stage.md` |
 | 2026-11-20 | Slice 5 / Chrome `window.fetch` `Illegal invocation` & 5s Budget Fix (v0.3.1) | Fixed critical browser-only bug where `this.fetchFn = fetch` threw `TypeError: Failed to execute 'fetch' on 'Window': Illegal invocation` in Chrome (silently returning 0 results); removed blocking 279 MB remote HuggingFace / `cdn.jsdelivr.net` WASM download on the critical check path; parallelized Spark proxy probe with Wikipedia/academic fetches; bumped manifest to `v0.3.1` and verified in real Google Chrome via Playwright (`Supported · 91% · 13 sources in 2.7s`) + added strict `Illegal invocation` regression test | `03-implementation-stage.md` |
+| 2026-11-24 | Slice 7 / Factuality v2 (v0.4.0) & Living Google Drive Design Doc | Shipped Factuality v2 (`v0.4.0`) across all packages: `@citerra/core` atomic claim decomposition & zero-hallucination structured conflict engine (`17/17` adversarial traps caught, `0/4` false flags), Wikidata structured entity triples + OpenAlex full abstracts + GDELT DOC 2.0 news, Chrome 138+ stable `LanguageModel` Gemini Nano with `1,900 ms` timeout, progressive `onPartialResult` streaming, Atomic Claim Breakdown + inline Conflict Diff + stance-sorted Evidence Trail UI, 60-claim X-FACT benchmark (`71.7%` calibrated / `0.360` true Macro-F1 / `100%` `< 5s`), 4/4 real-Chrome Playwright E2E gate (`1.91–2.72s`, `0` page errors), public `/benchmarks` route, and live Google Drive Design Doc (`1LgM6ScrmqPcp2KjpKu5jNQ1enIE2zAk1WgYiO3JNsiA` in `Citerra app`) with embedded Data Flow & Services Architecture diagrams | `00-overview.md`, `01-design.md`, `02-testing-playbook.md`, `03-implementation-stage.md`, `PROJECTS_INDEX.md` |

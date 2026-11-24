@@ -62,6 +62,28 @@
   - **Target Files:** `apps/mobile/src/**`, `apps/mobile/android/ProcessTextActivity.kt`, `apps/mobile/test/**`
   - **Verification:** `pnpm --filter @citerra/mobile test && pnpm --filter @citerra/mobile build` (2/2 passing)
 
+### Slice 7: Factuality v2 — Atomic Claims, Conflict Engine & Free-Core Evidence Expansion
+- [ ] **Task 7.1:** Add `@citerra/core` v2 schemas (`AtomicClaimVerdict`, citation `stance`/`matchedQuote`, `VerificationTier` Pro hook), `decomposeAtomicClaims` (top 2–3 check-worthy claims), `detectStructuredConflicts` (dates/years/percentages/quantities/entities), and the 20-case **Adversarial Perturbation Test Suite**
+  - **Model Tier:** `pro`
+  - **Target Files:** `packages/core/src/schemas.ts`, `packages/core/src/atomic.ts`, `packages/core/src/conflicts.ts`, `packages/core/test/adversarial.test.ts`
+  - **Verification:** `pnpm --filter @citerra/core test`
+- [ ] **Task 7.2:** Expand `LiveBrowserEvidenceClient` & backend proxy: add browser-direct **Wikidata structured entity triples**, **OpenAlex `abstract_inverted_index` full abstract reconstruction**, **GDELT DOC 2.0 100-language news**, richer Wikipedia extracts, and Pro-ready `/api/v1/corroborate` tier/Google Fact Check API contract
+  - **Model Tier:** `flash`
+  - **Target Files:** `apps/extension/src/browser-evidence-client.ts`, `packages/backend/src/providers.ts`, `packages/backend/src/service.ts`
+  - **Verification:** `pnpm --filter @citerra/extension exec vitest run test/extension.test.ts test/live-verification.test.ts`
+- [ ] **Task 7.3:** Upgrade `OnDeviceAiEngine` & `ExtensionBackgroundOrchestrator` with **3-Layer Verification** (atomic parallel scoring + structured/Wikidata conflict gating + **Chrome 138+ stable `LanguageModel` Gemini Nano** with `2.0s` timeout fallback + progressive `onPartialResult` callback)
+  - **Model Tier:** `pro`
+  - **Target Files:** `apps/extension/src/on-device-ai.ts`, `apps/extension/src/background-orchestrator.ts`, `apps/extension/src/SidePanelApp.tsx`
+  - **Verification:** `pnpm --filter @citerra/extension test`
+- [ ] **Task 7.4:** Upgrade `@citerra/ui` `FactCheckCard` & `CitationItemCard` with **Atomic Claim Checklist**, inline **Conflict Diff callouts** (`1885 vs. 1879 [1]`), per-citation **Stance tags** (`Supports` / `Contradicts` / `Context`), and **Progressive Reveal** animation (`prefers-reduced-motion` compliant)
+  - **Model Tier:** `flash`
+  - **Target Files:** `packages/ui/src/components.tsx`, `packages/ui/test/ui.test.tsx`, `apps/extension/test/visual-ui.test.tsx`
+  - **Verification:** `pnpm --filter @citerra/ui test && pnpm --filter @citerra/extension exec vitest run test/visual-ui.test.tsx`
+- [ ] **Task 7.5:** Expand **X-FACT Benchmark** to 60+ claims with true per-class Precision/Recall/Macro-F1, create **Real-Chrome Playwright E2E 5s SLA gate** (`scripts/verify-chrome-e2e.mjs`), and publish public **`/benchmarks` Transparency Scorecard** on `apps/web` linked from extension footer
+  - **Model Tier:** `flash`
+  - **Target Files:** `apps/extension/scripts/benchmark-i18n.ts`, `apps/extension/scripts/verify-chrome-e2e.mjs`, `apps/web/src/**`
+  - **Verification:** `pnpm test && pnpm --filter @citerra/extension build && node apps/extension/scripts/verify-chrome-e2e.mjs`
+
 ---
 
 ## 2. Rulings & Spec Drift Ledger

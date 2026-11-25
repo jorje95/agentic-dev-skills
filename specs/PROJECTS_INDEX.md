@@ -10,7 +10,7 @@ This is the master index of all projects and their **Hierarchical Living Spec Tr
 
 | Project ID (`slug`) | Project Name | Current Stage | Tech Stack | Spec Tree Root | Workspace / Repo | Last Updated |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `citerra` | **Citerra** | `Implementation (V1 Slices 1–8 Complete · Factuality v3 v0.5.0)` | Firebase (Hosting, Firestore TTL, Functions v2), Cloudflare Workers (`$0/mo` Proxy), Gemini Decision 1, Vite MV3, React 19, React Native + Expo + Kotlin | [specs/projects/citerra](./projects/citerra/00-overview.md) | `/Users/nitroi/.gemini/antigravity/scratch/citerra` (`jorje95/citerra` — Private) | 2026-11-24 |
+| `citerra` | **Citerra** | `Implementation (V1 Slices 1–8 Complete · v0.5.1 Live Proxy)` | Firebase (Hosting, Firestore TTL, Functions v2), Cloudflare Workers LIVE (`$0/mo`), Gemini Decision 1, Vite MV3, React 19, React Native + Expo + Kotlin | [specs/projects/citerra](./projects/citerra/00-overview.md) | `/Users/nitroi/.gemini/antigravity/scratch/citerra` (`jorje95/citerra` — Private) | 2026-11-25 |
 
 ---
 
